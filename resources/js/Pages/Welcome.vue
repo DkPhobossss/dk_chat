@@ -1,29 +1,11 @@
 <script setup>
 import { Head, Link } from '@inertiajs/vue3';
-
-defineProps({
-    canLogin: {
-        type: Boolean,
-    },
-    canRegister: {
-        type: Boolean,
-    },
-    laravelVersion: {
-        type: String,
-        required: true,
-    },
-    phpVersion: {
-        type: String,
-        required: true,
-    },
-});
-
 </script>
 
 <template>
     <Head title="Welcome" /> 
     <header class="py-10 ">
-        <nav v-if="canLogin" class="flex justify-end flex-1 -mx-3">
+        <nav class="flex justify-end flex-1 -mx-3">
             <Link v-if="$page.props.auth.user" :href="route('dashboard')"
                 class="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white">
             Dashboard

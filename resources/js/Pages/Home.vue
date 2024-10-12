@@ -1,11 +1,8 @@
 <script setup>
 import { Head } from '@inertiajs/vue3';
-import MainButton from '@/Components/PrimaryLink.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 
-defineProps({
 
-});
 </script>
 
 <template>

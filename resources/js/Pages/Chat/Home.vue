@@ -2,6 +2,11 @@
 import { Head } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 
+defineProps({
+    chats: {
+        type: Object,
+    },
+});
 
 </script>
 
@@ -15,8 +20,11 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
         </h1>
 
         <div class="flex items-center justify-center mt-4 ">
-           qweqwe
-            
+            <div v-for="chat in chats">
+                {{ chat.id }}
+                {{ chat.updated_at }}
+                {{ chat.name}}
+            </div>
         </div>
     </AuthenticatedLayout>
 </template>

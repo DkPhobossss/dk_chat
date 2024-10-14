@@ -9,7 +9,7 @@ import { Link } from '@inertiajs/vue3';
 
 const showingNavigationDropdown = ref(false);
 </script>
-
+    
 <template>
     <div>
         <div class="min-h-screen bg-white">
@@ -22,7 +22,7 @@ const showingNavigationDropdown = ref(false);
                         <div class="flex">
                             <!-- Logo -->
                             <div class="flex items-center shrink-0">
-                                <Link :href="route('home')">
+                                <Link :href="route('chats.index')">
                                     <ApplicationLogo
                                         class="block w-auto text-gray-800 fill-current h-9"
                                     />
@@ -34,7 +34,7 @@ const showingNavigationDropdown = ref(false);
                                 class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex"
                             >
                                 <NavLink
-                                    :href="route('home')"
+                                    :href="route('chats.index')"
                                 >
                                     Dashboard
                                 </NavLink>
@@ -135,7 +135,7 @@ const showingNavigationDropdown = ref(false);
                 >
                     <div class="pt-2 pb-3 space-y-1">
                         <ResponsiveNavLink
-                            :href="route('home')"
+                            :href="route('chats.index')"
                         >
                             Dashboard
                         </ResponsiveNavLink>

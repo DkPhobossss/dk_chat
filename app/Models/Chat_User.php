@@ -7,5 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Chat_User extends Model
 {
+    
     use HasFactory;
 }

@@ -78,16 +78,16 @@ const submit = () => {
 
             <div class="flex items-center justify-end mt-4">
                 <PrimaryButton
-                    class="ms-4"
+                    class="mr-4"
                     :class="{ 'opacity-25': form.processing }"
                     :disabled="form.processing"
                 >
                     Log in
                 </PrimaryButton>
 
-                <PrimaryLink class="ms-4" :link="route('register')">
-                    Register
-                </PrimaryLink>
+                <Link :href="route('register')" class="text-sm text-gray-600 underline rounded-md hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                    Go to Register
+                </Link>
             </div>
         </form>
     </GuestLayout>

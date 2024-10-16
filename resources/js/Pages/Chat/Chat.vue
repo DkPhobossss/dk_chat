@@ -2,10 +2,11 @@
 import { Head, useForm, usePage } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import ChatLayout from '@/Layouts/ChatLayout.vue';
-import ChatMessage from '../../Components/Chat/ChatMessage.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
 import axios from 'axios';
 import { ref } from 'vue';
+import ChatTitle from '@/Components/Chat/ChatTitle.vue';
+import ChatMessageList from '@/Components/Chat/ChatMessageList.vue';
+import ChatSendMessageForm from '@/Components/Chat/ChatSendMessageForm.vue';
 
 
 let props = defineProps({
@@ -27,9 +28,7 @@ const form = useForm({
     body: null
 });
 
-
 const savedMessage = ref(null);
-
 
 const onEditClick = (messageId, index) => {
     savedMessage.value = {
@@ -38,6 +37,15 @@ const onEditClick = (messageId, index) => {
         'body': savedMessage.value ? savedMessage.value.body : form.body
     }
     form.body = props.messages[index]['body'];
+}
+
+const getChatIndexById = (id) => {
+    return props.chats.findIndex((element) => element.id === id);
+}
+
+const pushChat = (id) => {
+    const index = getChatIndexById(id);
+    props.chats.unshift(props.chats.splice(index, 1)[0]);
 }
 
 const onEditCancel = () => {
@@ -56,7 +64,7 @@ const onEditSubmit = (messageId, index) => {
     });
 }
 
-const sendMessage = () => {
+const onSendMessage = () => {
     if (savedMessage.value !== null) {
         return onEditSubmit(savedMessage.value.messageId, savedMessage.value.index);
     }
@@ -68,6 +76,8 @@ const sendMessage = () => {
             name: usePage().props.auth.user.name
         }
         props.messages.push(res.data.data);
+
+        pushChat(props.chat.id);
     }).catch((error) => {
         console.error("Error:", error);
     });
@@ -92,39 +102,21 @@ const onRestoreClick = (messageId, index) => {
         console.error("Error:", error);
     });
 }
-
-
 </script>
 
 <template>
     <AuthenticatedLayout>
         <Head :title="`${$page.props.auth.user.name} ${chat.name}`" />
-        <ChatLayout :chats>
-            <div class="flex flex-col">
-                <div class="h-5/6">
-                    <h1>
-                        {{ chat.name }}
-                        (
-                        <b v-for="(user, index) in chatUsers">
-                            <template v-if="index > 0">,</template>
-                            {{ user.name }}
-                        </b>
-                        )
-                    </h1>
-                    <ChatMessage v-for="(message, key) in messages" :message :key="key" :index="key" :onEditClick
-                        :onDeleteClick :onRestoreClick></ChatMessage>
+        <ChatLayout :chats :activeChatId="chat.id">
+            <div class="flex flex-col h-full">
+                <div class="px-3 pt-3 border-b border-gray-400">
+                    <ChatTitle :title="chat.name" :chatUsers  />
                 </div>
 
+                <ChatMessageList :messages :onEditClick :onDeleteClick :onRestoreClick />
 
-                <div class="mt-auto">
-                    <form class="flex justify-center" @submit.prevent="sendMessage">
-                        <textarea name="message" id="message" v-model="form.body" required></textarea>
-                        <div class="ml-auto">
-                            <PrimaryButton>Send</PrimaryButton>
-                            <PrimaryButton v-if="savedMessage !== null" @click.prevent="onEditCancel">Cancel
-                            </PrimaryButton>
-                        </div>
-                    </form>
+                <div class="p-3 mt-auto border-t border-gray-400">
+                    <ChatSendMessageForm :form :onSendMessage :onEditCancel :savedMessage :refForm="form" />
                 </div>
             </div>
         </ChatLayout>

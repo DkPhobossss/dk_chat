@@ -47,6 +47,6 @@ class User extends Authenticatable
     }
 
     public function chats() : BelongsToMany {
-        return $this->belongsToMany(Chat::class)->withPivot('updated_at') ;
+        return $this->belongsToMany(Chat::class)->withPivot('last_seen_message_id');
     }
 }

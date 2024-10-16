@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\MessageResource;
 use App\Models\Chat;
+use App\Models\Chat_User;
 use App\Models\Message;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class MessageController extends Controller
 {
@@ -16,11 +18,28 @@ class MessageController extends Controller
             'body' => 'required',
         ]);
 
-        $message = Message::create([
-            'user_id' => Auth::id(),
-            'chat_id' => $chat->id,
-            'body' => $request->body
-        ]);
+        try {
+            DB::beginTransaction();
+
+            $message = Message::create([
+                'user_id' => Auth::id(),
+                'chat_id' => $chat->id,
+                'body' => $validated['body']
+            ]);
+
+            $chatUser = new Chat_User();
+            $chatUser->updateUserLastSeenMessage(Auth::id(), $chat->id, $message->id);
+
+            $chat->touch();
+
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return [
+                'status' => 500,
+                'message' => $e->getMessage(),
+            ];
+        }
 
         return new MessageResource($message);
     }
@@ -31,7 +50,7 @@ class MessageController extends Controller
             'body' => 'required',
         ]);
 
-        $message->body = $request->body;
+        $message->body = $validated['body'];
         $message->save();
 
         return new MessageResource($message);

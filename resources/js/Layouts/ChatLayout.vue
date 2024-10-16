@@ -1,32 +1,31 @@
 <script setup>
 
-import ChatItem from '@/Components/Chat/ChatItem.vue';
+import ChatList from '@/Components/Chat/ChatList.vue';
 import ChatSearch from '@/Components/Chat/ChatSearch.vue';
-import { Link } from '@inertiajs/vue3';
 
-defineProps({
+const props = defineProps({
     chats: {
         type: Array,
     },
+    activeChatId: {
+        type: [Number, null],
+        default: null
+    }
 });
 
-const onClick = (chatId) => {
-
-}
 </script>
 
 <template>
-    <div class="flex flex-row border border-indigo-600">
-        <div class="p-4 border border-indigo-600">
-            <ChatSearch name="search" id="search" :onClick></ChatSearch>
+    <div class="h-full py-3 text-gray-900">
+        <div class="flex h-full border rounded-lg shadow-xl border-gray-500/50">
+            <div class="flex flex-col w-1/5 py-3 border-r border-gray-500/50">
+                <ChatSearch name="search" id="search"></ChatSearch>
+                <ChatList :chats :activeChatId />
+            </div>
 
-            <ChatItem v-for="(chat,key) in chats" :key="key" :chat >
-                
-            </ChatItem>
-        </div>
-
-        <div class="p-4 border border-indigo-600">
-            <slot />
+            <div class="grow">
+                <slot />
+            </div>
         </div>
     </div>
 </template>

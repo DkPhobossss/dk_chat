@@ -25,9 +25,12 @@ Route::middleware(MiddlewareRedirectIfAuthenticated::class)->group(function () {
 Route::middleware('auth')->group(function () {
     Route::get('/chats', [ChatController::class, 'index'])
         ->name('chats.index');
+    //in api
+    Route::post('/chats', [ChatController::class, 'store'])
+        ->name('chats.store');
     Route::get('/chats/{chat}', [ChatController::class, 'show'])
         ->name('chats.show');
-    //in api i guess
+    //in api
     Route::get('/search/users', [UserController::class, 'search'])
         ->name('users.search');
 

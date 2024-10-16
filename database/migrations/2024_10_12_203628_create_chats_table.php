@@ -31,10 +31,9 @@ return new class extends Migration
         Schema::create('chat_user', function (Blueprint $table) {
             $table->foreignId('user_id')->constrained();
             $table->foreignId('chat_id')->constrained();
-            $table->timestamps();
+            $table->unsignedBigInteger('last_seen_message_id')->nullable();
 
             $table->primary(['user_id', 'chat_id']);
-            $table->index(['user_id', 'updated_at']);
         });
 
     }

@@ -1,3 +1,30 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer utilities {
+    /* Для WebKit-браузеров (Chrome, Safari, Edge) */
+    .scrollbar::-webkit-scrollbar {
+        width: 4px; /* Ширина полосы прокрутки */
+    }
+
+    .scrollbar::-webkit-scrollbar-track {
+        background-color: #f3f4f6; /* Цвет фона полосы прокрутки */
+    }
+
+    .scrollbar::-webkit-scrollbar-thumb {
+        background-color: #6b7280; /* Цвет самого скроллбара */
+        border-radius: 10px; /* Радиус скругления */
+    }
+
+    .scrollbar::-webkit-scrollbar-thumb:hover {
+        background-color: #4b5563; /* Цвет при наведении */
+    }
+
+    @-moz-document url-prefix() {
+        .scrollbar {
+            scrollbar-width: thin; /* Firefox */
+            scrollbar-color: #6b7280 #f3f4f6; /* Цвет прокрутки */
+        }
+    }
+}

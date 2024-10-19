@@ -116,7 +116,7 @@ const onRestoreClick = (messageId, index) => {
                 <ChatMessageList :messages :onEditClick :onDeleteClick :onRestoreClick />
 
                 <div class="p-3 mt-auto border-t border-gray-400">
-                    <ChatSendMessageForm :form :onSendMessage :onEditCancel :savedMessage :refForm="form" />
+                    <ChatSendMessageForm :onSendMessage :onEditCancel :savedMessage :refForm="form" />
                 </div>
             </div>
         </ChatLayout>

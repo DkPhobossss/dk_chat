@@ -1,6 +1,6 @@
 <script setup>
 
-import { Link } from '@inertiajs/vue3';
+import { router } from '@inertiajs/vue3'
 import dayjs from 'dayjs';
 import 'dayjs/locale/ru';
 dayjs.locale('ru');
@@ -23,10 +23,13 @@ const formatDate = (dateString) => {
         return date.format('DD.MM.YYYY');
     }
 }
+const openChat = (id) => {
+    router.visit(route('chats.show', id), { preserveScroll: true, preserveState: true });
+}
 </script>
 
 <template>
-    <Link :class="selected ? 'bg-indigo-600 !text-white' : 'hover:bg-gray-100/50'" :href="route('chats.show', chat.id)"
+    <a @click.prevent="openChat(chat.id)" :class="selected ? 'bg-indigo-600 !text-white' : 'hover:bg-gray-100/50'"
         class="relative flex flex-col p-3 cursor-pointer">
         <h4 class="flex">
             <strong>{{ chat.name }}</strong>
@@ -34,11 +37,11 @@ const formatDate = (dateString) => {
                 formatDate(chat.updated_at) }}</time>
         </h4>
 
-        <div v-if="chat.messages[0] && chat.messages[0].body && chat.messages[0].id  !== chat.pivot['last_seen_message_id']" class="absolute block -translate-y-1/2 bg-orange-800 rounded-full size-2 top-1/2 right-2"></div>
+        <div v-if="chat.last_message && chat.last_message.body && chat.last_message.id  !== chat.last_seen_message_id" class="absolute block -translate-y-1/2 bg-orange-800 rounded-full size-2 top-1/2 right-2"></div>
         
 
         <div class="overflow-hidden whitespace-nowrap text-ellipsis" :class="selected ? 'text-white' : 'text-gray-400'">
-            {{ chat.messages[0] && chat.messages[0].body ? chat.messages[0].body : '&nbsp;' }}
+            {{ chat.last_message && chat.last_message.body ? chat.last_message.body : '&nbsp;' }}
         </div>
-    </Link>
+    </a>
 </template>

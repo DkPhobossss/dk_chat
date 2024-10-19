@@ -8,6 +8,10 @@ import TextInput from '@/Components/TextInput.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import PrimaryLink from '@/Components/PrimaryLink.vue';
 
+axios.get('/sanctum/csrf-cookie').then(() => {
+    // Login...
+});
+
 defineProps({
     status: {
         type: String,

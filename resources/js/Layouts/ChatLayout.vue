@@ -10,6 +10,9 @@ const props = defineProps({
     activeChatId: {
         type: [Number, null],
         default: null
+    },
+    onSearchResultsClick: {
+        type: Function
     }
 });
 
@@ -19,7 +22,7 @@ const props = defineProps({
     <div class="h-full py-3 text-gray-900">
         <div class="flex h-full border rounded-lg shadow-xl border-gray-500/50">
             <div class="flex flex-col w-1/5 py-3 border-r border-gray-500/50">
-                <ChatSearch name="search" id="search"></ChatSearch>
+                <ChatSearch :onSearchResultsClick name="search" id="search"></ChatSearch>
                 <ChatList :chats :activeChatId />
             </div>
 

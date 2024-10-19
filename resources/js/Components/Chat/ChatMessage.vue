@@ -38,7 +38,7 @@ const formatDate = (dateString) => {
         <div class="relative">
             <strong>{{ message.user.name }}</strong>
             <div class="absolute top-0 right-0 hidden group-hover:block"
-                v-if="message.user.id === $page.props.auth.user.id">
+                v-if="message.user_id === $page.props.auth.user.id">
                 <template v-if="message.body !== null">
                     <a class="inline-block cursor-pointer" @click.prevent="onEditClick(message.id, index, message)">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"

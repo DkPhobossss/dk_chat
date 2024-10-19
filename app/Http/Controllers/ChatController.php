@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ChatResource;
+use App\Http\Resources\ChatWithLastMessageResource;
+use App\Http\Resources\MessageResource;
+use App\Http\Resources\UserResource;
 use App\Models\Chat;
 use App\Models\Chat_User;
 use App\Models\User;
@@ -14,14 +18,19 @@ class ChatController extends Controller
 {
     public function index()
     {
-        $userChats = $this->getAuthUserChats();
-
-        return Inertia::render('Chat/Chats', [
-            'chats' => $userChats,
+        return Inertia::render('Chat/ChatMain',[
+            'auth' => [
+                'user' => Auth::user(),
+            ],
         ]);
     }
 
-    public function show(Chat $chat)
+    public function list()
+    {
+        return (ChatWithLastMessageResource::collection($this->getAuthUserChats()))->resolve();
+    }
+
+    public function data(Chat $chat)
     {
         $chatUsers = $chat->users()->select('id', 'name')->get();
 
@@ -41,13 +50,27 @@ class ChatController extends Controller
             $chatUser->updateUserLastSeenMessage(Auth::id(), $chat->id, $lastMessage->id);
         }
 
-        $userChats = $this->getAuthUserChats();
+        return [
+            'id' => $chat->id,
+            'messages' => MessageResource::collection($chatMessages),
+            'users' => UserResource::collection($chatUsers),
+        ];
+    }
 
-        return Inertia::render('Chat/Chat', [
-            'chat' => $chat,
-            'chats' => $userChats,
-            'messages' => $chatMessages,
-            'chatUsers' => $chatUsers
+    public function show(Chat $chat)
+    {
+        $chatUsers = $chat->users()->where('id', Auth::id())->first();
+
+        if (!$chatUsers) {
+            //403 is more correct, but 404 is better for security reasons
+            abort(404);
+        }
+
+        return Inertia::render('Chat/ChatMain', [
+            'initialChatId' => $chat->id,
+            'auth' => [
+                'user' => Auth::user(),
+            ]
         ]);
     }
 
@@ -66,19 +89,15 @@ class ChatController extends Controller
 
         $chatId = $this->getUsersChatId([$currentUserId, $searchUser->id]);
 
-
         if ($chatId === null) {
             try {
                 DB::beginTransaction();
                 $chat = Chat::create([
-                    'name' => (strcmp(Auth::user()->name, $searchUser['name']) >= 0
-                        ? (Auth::user()->name . ' and ' . $searchUser['name'])
-                        : ($searchUser['name'] . ' and ' . Auth::user()->name))
+                    'name' => min(Auth::user()->name, $searchUser['name']) . ' and ' . max(Auth::user()->name, $searchUser['name'])
                 ]);
 
                 $chat->users()->attach([$currentUserId, $searchUser->id]);
 
-                $chatId = $chat->id;
                 DB::commit();
             } catch (\Exception $e) {
                 DB::rollBack();
@@ -87,9 +106,11 @@ class ChatController extends Controller
                     'message' => $e->getMessage(),
                 ];
             }
+
+            return (new ChatResource($chat))->resolve();
         }
 
-        return to_route('chats.show', ['chat' => $chatId]);
+        return ['id' => $chatId];
     }
 
     public function getUsersChatId(array $userIds): int|null

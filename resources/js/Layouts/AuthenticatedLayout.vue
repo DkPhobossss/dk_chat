@@ -6,6 +6,8 @@ import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import { Link } from '@inertiajs/vue3';
+import { router } from '@inertiajs/vue3'
+
 
 const showingNavigationDropdown = ref(false);
 </script>
@@ -19,16 +21,16 @@ const showingNavigationDropdown = ref(false);
                     <div class="flex">
                         <!-- Logo -->
                         <div class="flex items-center shrink-0">
-                            <Link :href="route('chats.index')">
+                            <a class="cursor-pointer" @click.prevent="router.visit(route('chats.index'), { preserveScroll: true, preserveState: true })">
                             <ApplicationLogo class="block w-auto text-gray-800 fill-current h-9" />
-                            </Link>
+                            </a>
                         </div>
 
                         <!-- Navigation Links -->
                         <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                            <NavLink :href="route('chats.index')">
+                            <a class="inline-flex items-center px-1 pt-1 text-sm font-medium leading-5 text-gray-900 transition duration-150 ease-in-out border-b-2 border-indigo-400 cursor-pointer focus:outline-none focus:border-indigo-700" @click.prevent="router.visit(route('chats.index'), { preserveScroll: true, preserveState: true })">
                                 Chats
-                            </NavLink>
+                            </a>
                         </div>
                     </div>
 

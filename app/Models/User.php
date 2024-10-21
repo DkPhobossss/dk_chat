@@ -50,4 +50,11 @@ class User extends Authenticatable
     public function chats() : BelongsToMany {
         return $this->belongsToMany(Chat::class)->withPivot('last_seen_message_id');
     }
+
+    public static function getUserChats(User $user)
+    {
+        return $user->chats()->orderByDesc('updated_at')->with(['messages' => function ($query) {
+            $query->select('id', 'chat_id', 'body')->latest()->take(1);
+        }])->get();
+    }
 }

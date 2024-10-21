@@ -24,6 +24,8 @@ Route::middleware('auth:sanctum')->group(function () {
         ->name('chats.messages.update');
     Route::patch('/chats/{chat}/messages/{message}', [MessageController::class, 'restore'])->can('update', 'message')
         ->name('chats.messages.restore');
+    Route::patch('/chats/{chat}/messages/{message}/last_seen', [MessageController::class, 'updateLastSeen'])->can('update', 'chat')
+        ->name('chats.messages.update.last_seen');
     Route::delete('/chats/{chat}/messages/{message}', [MessageController::class, 'destroy'])->can('update', 'message')
         ->name('chats.messages.destroy');
 });

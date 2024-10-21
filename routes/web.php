@@ -9,7 +9,6 @@ use App\Http\Middleware\RedirectIfAuthenticated as MiddlewareRedirectIfAuthentic
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-
 Route::middleware(MiddlewareRedirectIfAuthenticated::class)->group(function () {
     Route::get('/', [AuthenticatedSessionController::class, 'create'])
         ->name('login');
@@ -31,3 +30,7 @@ Route::middleware('auth')->group(function () {
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
         ->name('logout');
 });
+
+Route::post('/broadcasting/auth', function () {
+    return response()->json(['message' => 'Authenticated']);
+})->middleware(['auth:sanctum']);

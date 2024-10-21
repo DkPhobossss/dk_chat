@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\Chat\ChatCreatedEvent;
 use App\Http\Resources\ChatResource;
 use App\Http\Resources\ChatWithLastMessageResource;
 use App\Http\Resources\MessageResource;
@@ -27,7 +28,7 @@ class ChatController extends Controller
 
     public function list()
     {
-        return (ChatWithLastMessageResource::collection($this->getAuthUserChats()))->resolve();
+        return (ChatWithLastMessageResource::collection(User::getUserChats(Auth::user())))->resolve();
     }
 
     public function data(Chat $chat)
@@ -99,6 +100,9 @@ class ChatController extends Controller
                 $chat->users()->attach([$currentUserId, $searchUser->id]);
 
                 DB::commit();
+
+                broadcast(new ChatCreatedEvent($chat))->toOthers();
+
             } catch (\Exception $e) {
                 DB::rollBack();
                 return [
@@ -121,10 +125,5 @@ class ChatController extends Controller
             ->value('chat_id');
     }
 
-    private function getAuthUserChats()
-    {
-        return Auth::user()->chats()->orderByDesc('updated_at')->with(['messages' => function ($query) {
-            $query->select('id', 'chat_id', 'body')->latest()->take(1);
-        }])->get();
-    }
+    
 }

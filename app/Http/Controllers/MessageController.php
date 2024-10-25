@@ -45,7 +45,7 @@ class MessageController extends Controller
 
         broadcast(new MessageEvent($message, MessageType::MessageSent))->toOthers();
 
-        return new MessageResource($message);
+        return MessageResource::make($message)->resolve();
     }
 
     public function update(Chat $chat, Message $message, Request $request)
@@ -59,7 +59,7 @@ class MessageController extends Controller
 
         broadcast(new MessageEvent($message, MessageType::MessageUpdated))->toOthers();
 
-        return new MessageResource($message);
+        return MessageResource::make($message)->resolve();
     }
 
     public function restore(Chat $chat, Message $message)
@@ -71,7 +71,7 @@ class MessageController extends Controller
 
         broadcast(new MessageEvent($message, MessageType::MessageRestored))->toOthers();
 
-        return new MessageResource($message);
+        return MessageResource::make($message)->resolve();
     }
 
     public function destroy(Chat $chat, Message $message)
@@ -83,15 +83,17 @@ class MessageController extends Controller
 
         broadcast(new MessageEvent($message, MessageType::MessageDestroyed))->toOthers();
 
-        return new MessageResource($message);
+        return MessageResource::make($message)->resolve();
     }
 
     public function updateLastSeen(Chat $chat, Message $message) 
     {
-        return Chat_User::where([
-            'chat_id' => $chat->id,
-            'user_id' => Auth::id(),
-        ])->where('last_seen_message_id', '<', $message->id)
-          ->update(['last_seen_message_id' => $message->id]);
+        if ( $message->chat->id !== $chat->id ) {
+            abort(404);
+        }
+
+        return response()->json([
+            'result' => Chat_User::updateUserLastSeenMessageWhenHeViewIt(Auth::id(), $chat->id, $message->id)
+        ]);
     }
 }

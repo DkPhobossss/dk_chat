@@ -13,8 +13,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/chats', [ChatController::class, 'store'])
         ->name('chats.store');
     Route::get('/chats/{chat}/data', [ChatController::class, 'data'])
-        ->name('chats.data'); 
-    
+        ->name('chats.data');
+
     Route::get('/search/users', [UserController::class, 'search'])
         ->name('users.search');
 
@@ -28,4 +28,8 @@ Route::middleware('auth:sanctum')->group(function () {
         ->name('chats.messages.update.last_seen');
     Route::delete('/chats/{chat}/messages/{message}', [MessageController::class, 'destroy'])->can('update', 'message')
         ->name('chats.messages.destroy');
+
+    Route::post('/broadcasting/auth', function () {
+        
+    });
 });

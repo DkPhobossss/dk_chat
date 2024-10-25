@@ -19,11 +19,7 @@ class ChatController extends Controller
 {
     public function index()
     {
-        return Inertia::render('Chat/ChatMain',[
-            'auth' => [
-                'user' => Auth::user(),
-            ],
-        ]);
+        return Inertia::render('Chat/ChatMain');
     }
 
     public function list()
@@ -51,11 +47,11 @@ class ChatController extends Controller
             $chatUser->updateUserLastSeenMessage(Auth::id(), $chat->id, $lastMessage->id);
         }
 
-        return [
+        return response()->json([
             'id' => $chat->id,
             'messages' => MessageResource::collection($chatMessages),
             'users' => UserResource::collection($chatUsers),
-        ];
+        ]);
     }
 
     public function show(Chat $chat)
@@ -69,9 +65,6 @@ class ChatController extends Controller
 
         return Inertia::render('Chat/ChatMain', [
             'initialChatId' => $chat->id,
-            'auth' => [
-                'user' => Auth::user(),
-            ]
         ]);
     }
 
@@ -102,7 +95,6 @@ class ChatController extends Controller
                 DB::commit();
 
                 broadcast(new ChatCreatedEvent($chat))->toOthers();
-
             } catch (\Exception $e) {
                 DB::rollBack();
                 return [
@@ -124,6 +116,4 @@ class ChatController extends Controller
             ->havingRaw('COUNT(chat_id) = ?', [count($userIds)])
             ->value('chat_id');
     }
-
-    
 }

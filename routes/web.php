@@ -29,8 +29,4 @@ Route::middleware('auth')->group(function () {
 
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
         ->name('logout');
-});
-
-Route::post('/broadcasting/auth', function () {
-    return response()->json(['message' => 'Authenticated']);
-})->middleware(['auth:sanctum']);
+});   

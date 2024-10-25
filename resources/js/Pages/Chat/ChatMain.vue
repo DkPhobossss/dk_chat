@@ -238,7 +238,7 @@ function onSendMessage() {
 
     //create new message
     axios.post(route('chats.messages.store', activeChat.value.id), form).then((res) => {
-        addMessageToChat(activeChat.value.id, res.data.data, true, true);
+        addMessageToChat(activeChat.value.id, res.data, true, true);
     }).catch((error) => {
         handleError(error);
     });
@@ -264,7 +264,7 @@ function addMessageToChat(chatId, message, messageSeen = false, authUserIsOwner 
 
 function onEditSubmit(messageId, messageIndex) {
     axios.put(route('chats.messages.update', [activeChat.value.id, messageId]), form).then((res) => {
-        editMessageInChat(activeChatId.value, res.data.data, messageIndex);
+        editMessageInChat(activeChatId.value, res.data, messageIndex);
         savedMessage.value = null;
         form.body = null;
     }).catch((error) => {
@@ -286,7 +286,7 @@ function editMessageInChat(chatId, messageData) {
 function onDeleteClick(messageId, index) {
     if (window.confirm('Are you sure u want to delete?')) {
         axios.delete(route('chats.messages.destroy', [activeChat.value.id, messageId])).then((res) => {
-            destroyMessageInChat(activeChat.value.id, res.data.data);
+            destroyMessageInChat(activeChat.value.id, res.data);
         }).catch((error) => {
             handleError(error);
         });
@@ -299,7 +299,7 @@ function destroyMessageInChat(chatId, messageData) {
 
 function onRestoreClick(messageId, index) {
     axios.patch(route('chats.messages.restore', [activeChat.value.id, messageId])).then((res) => {
-        restoreMessageInChat(activeChat.value.id, res.data.data);
+        restoreMessageInChat(activeChat.value.id, res.data);
     }).catch((error) => {
         handleError(error);
     });

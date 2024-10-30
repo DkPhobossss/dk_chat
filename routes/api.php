@@ -1,13 +1,12 @@
 <?php
 
-use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/chats/list', [ChatController::class, 'list'])
         ->name('chats.list');
     Route::post('/chats', [ChatController::class, 'store'])

@@ -1,0 +1,45 @@
+services:
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./_docker/nginx/conf.d/:/etc/nginx/conf.d/
+      - ./public/:/var/www/public/
+    ports:
+      - 8888:80
+    depends_on:
+      - app
+    container_name: chat_nginx
+  app:
+    build:
+      context: .
+      dockerfile: _docker/app/Dockerfile
+    volumes:
+      - ./:/var/www/
+      - ./_docker/app/php.ini:/usr/local/etc/php/conf.d/php.ini
+    ports:
+      - 8080:8080
+    depends_on:
+      - db
+    container_name: chat_app
+  db:
+    image: mysql:8.4
+    restart: always
+    volumes:
+      - ./tmp/db:/var/lib/mysql
+      - ./_docker/db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    environment:
+      MYSQL_DATABASE: chat
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - 8101:3306
+    command: mysqld --character-set-server=utf8 --collation-server=utf8_unicode_ci
+    container_name: chat_db
+  vite:
+    build:
+      context: .
+      dockerfile: _docker/vite/Dockerfile
+    volumes:
+      - ./:/var/www/
+    ports:
+      - 5173:5173
+    container_name: chat_vite
